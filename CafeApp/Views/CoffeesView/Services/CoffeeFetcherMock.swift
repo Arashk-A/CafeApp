@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+struct CoffeeFetcherMock: CoffeeFetcher {
+  func fetchCoffees() async throws -> [Coffee] {
+    return Coffee.mock
+  }
+  
+//  func fetchCoffees() async throws -> [Coffee] {
+//    return Coffee.mock
+//  }
+}

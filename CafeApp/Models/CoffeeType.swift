@@ -6,22 +6,35 @@
 //
 
 import Foundation
+import RealmSwift
 
-// MARK: - CoffieType
-struct CoffeeType: Codable, Identifiable, Hashable {
-  let id: String
-  let name: String
-  let sizes: [String]
-  let extras: [String]
 
+class CoffeeType: Object, ObjectKeyIdentifiable, Codable {
+  @Persisted(primaryKey: true) var id: String
+  @Persisted var name: String
+  @Persisted var sizes: List<String>
+  @Persisted var extras: List<String>
+  
+  override class func primaryKey() -> String? {
+    "id"
+  }
+  
   enum CodingKeys: String, CodingKey {
       case id = "_id"
       case name, sizes, extras
   }
   
-  static var dummyType: CoffeeType {
-    let sizes = ["60ba18d13ca8c43196b5f606","60ba3368c45ecee5d77a016b"]
-    return CoffeeType(id: "60ba1a062e35f2d9c786c56d", name: "Ristretto", sizes: sizes, extras: ["60ba197c2e35f2d9c786c525"])
-      
+  required convenience init(from decoder: Decoder) throws {
+    self.init()
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+
+    id = try container.decode(String.self, forKey: .id)
+    name = try container.decode(String.self, forKey: .name)
+
+    let sizeList = try container.decode(List<String>.self, forKey: .sizes)
+    sizes = sizeList
+    let extrasList = try container.decode(List<String>.self, forKey: .extras)
+    extras = extrasList
   }
+  
 }

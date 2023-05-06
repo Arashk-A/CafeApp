@@ -7,29 +7,46 @@
 
 import XCTest
 
+@testable import CafeApp
+import RealmSwift
+
 final class RequestManagerTests: XCTestCase {
+  private var requestManager: RequestManagerProtocol? = nil
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+  override func setUp() {
+    super.setUp()
+    
+    requestManager = RequestManager(apiManager: APIManagerMock())
+  }
+  
+  func testRequestCffees() async throws {
+    guard let coffees: [Coffee] = try await requestManager?.perform(CoffeesRequestMock.getCoffees) else {
+      XCTFail("Didn't get data from the request manager")
+      
+      return
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+    
+    let coffee = coffees.first
+    
+    let types = coffee?.types
+    
+    let firstType = types?.first
+    let lastType = types?.last
+    
+    XCTAssertEqual(coffee?.id, "60ba1ab72e35f2d9c786c610");
+    
+    // Check for types
+    XCTAssertEqual(firstType?.id, "60ba1a062e35f2d9c786c56d")
+    XCTAssertEqual(firstType?.name, "Ristretto")
+    XCTAssertEqual(firstType?.sizes.first, "60ba18d13ca8c43196b5f606")
+    XCTAssertEqual(firstType?.extras.first, "60ba197c2e35f2d9c786c525")
+    
+    
+    XCTAssertEqual(lastType?.id, "60be1eabc45ecee5d77ad960")
+    XCTAssertEqual(lastType?.name, "Cappuccino")
+    XCTAssertEqual(lastType?.sizes.last, "60ba33dbc45ecee5d77a01f8")
+    XCTAssertEqual(lastType?.extras.first, "60ba197c2e35f2d9c786c525")
+    
+  }
 
 }

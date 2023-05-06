@@ -17,13 +17,13 @@ struct HomeView: View {
       NavigationView {
 
         ZStack {
-          Color.brown.opacity(0.4)
+          Colors.background
             .edgesIgnoringSafeArea(.all)
 
           VStack {
 
             HStack() {
-              Text("Tab the machine to start")
+              Text(Constants.homeHeaderText)
                 .font(.title)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -41,7 +41,7 @@ struct HomeView: View {
             .padding(.top, -110)
             
             HStack() {
-              Text("How does this work")
+              Text(Constants.homeFooterText)
                 .font(.title3)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -50,7 +50,7 @@ struct HomeView: View {
             
             Spacer()
           }
-          .navigationTitle("Navigation")
+          .navigationTitle(Constants.homeNavTitle)
           .padding(.horizontal, 20)
 
         }// END Of ZStack
@@ -66,10 +66,6 @@ struct HomeView: View {
       
     
     }
-}
-
-class HomeViewModel: ObservableObject {
-  @Published var presendCoffeView = false
 }
 
 struct HomeView_Previews: PreviewProvider {

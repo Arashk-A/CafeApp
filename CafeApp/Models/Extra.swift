@@ -7,57 +7,52 @@
 
 import Foundation
 
+import RealmSwift
+
 
 // MARK: - Extra
-struct Extra: Codable, Identifiable, Hashable {
-  let id: String
-  let name: String
-  var subselections: [Subselection]
-
+class Extra: Object, ObjectKeyIdentifiable, Codable {
+  @Persisted(primaryKey: true) var id: String
+  @Persisted var name: String
+  @Persisted var subselections: List<Subselection> = List<Subselection>()
+  
+  override class func primaryKey() -> String? {
+      "id"
+  }
+  
   enum CodingKeys: String, CodingKey {
       case id = "_id"
       case name, subselections
   }
   
-  mutating func selectedSubselection(to id: String) {
-    var newSub = [Subselection]()
-    for var sub in subselections {
+  required convenience init(from decoder: Decoder) throws {
+       self.init()
+       let container = try decoder.container(keyedBy: CodingKeys.self)
+       id = try container.decode(String.self, forKey: .id)
+       name = try container.decode(String.self, forKey: .name)
+    
+    let subselectionsList = try container.decode(List<Subselection>.self, forKey: .subselections)
+    subselections = subselectionsList
+
+   }
+  
+  func selectedSubselection(to id: String) {
+      var newSub = [Subselection]()
+    for sub in subselections {
         if sub.id == id {
           sub.isSelected = true
         } else {
           sub.isSelected = false
         }
-      newSub.append(sub)
-    }
-    subselections = newSub
+        newSub.append(sub)
+      }
+    subselections.removeAll()
+    subselections.insert(contentsOf: newSub, at: 0)
   }
   
-  var labelText: String {
-    return name.contains("milk") ? "milk" : "sugar"
-  }
+    var labelText: String {
+      return name.contains("milk") ? "milk" : "sugar"
+    }
+
 }
 
-// MARK: - Mock data for uint testing and populating previews
-extension Extra {
-  static var DummyExtras: [Extra] {
-    return [
-      Extra(
-        id: "60ba197c2e35f2d9c786c525",
-        name: "Select the amount of sugar",
-        subselections: [
-          Subselection(id: "60ba194dfdd5e192e14eaa75", name: "A lot"),
-          Subselection(id: "60ba195407e1dc8a4e33b5e5", name: "Normal"),
-        ]
-      ),
-      Extra(
-        id: "60ba34a0c45ecee5d77a0263",
-        name: "Select type of milk",
-        subselections: [
-          Subselection(id: "611a1adeff35e4db9df19667", name: "Soy"),
-          Subselection(id: "60ba348d8c75424ac5ed259e", name: "Oat"),
-          Subselection(id: "60ba349a869d7a04642b41f4", name: "Cow"),
-        ]
-      )
-    ]
-  }
-}

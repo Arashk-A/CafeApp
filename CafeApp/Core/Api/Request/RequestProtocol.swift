@@ -17,16 +17,13 @@ protocol RequestProtocol {
 extension RequestProtocol {
   
   var host: String {
-    APIConstants.baseUrl
+    return APIConstants.baseUrl
   }
 
   func createURLRequest() throws -> URLRequest {
-    var components = URLComponents()
-    components.scheme = "https"
-    components.host = host
-    components.path = path
+    let urlString = host + path
     
-    guard let url = components.url else { throw NetworkError.invalidURL }
+    guard let url = URL(string: urlString) else { throw NetworkError.invalidURL }
     
     var urlRequest = URLRequest(url: url)
     urlRequest.httpMethod = requestType.rawValue
