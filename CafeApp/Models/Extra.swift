@@ -35,21 +35,6 @@ class Extra: Object, ObjectKeyIdentifiable, Codable {
     subselections = subselectionsList
 
    }
-  
-  func selectedSubselection(to id: String) {
-      var newSub = [Subselection]()
-    for sub in subselections {
-        if sub.id == id {
-          sub.isSelected = true
-        } else {
-          sub.isSelected = false
-        }
-        newSub.append(sub)
-      }
-    subselections.removeAll()
-    subselections.insert(contentsOf: newSub, at: 0)
-  }
-  
     var labelText: String {
       return name.contains("milk") ? "milk" : "sugar"
     }
