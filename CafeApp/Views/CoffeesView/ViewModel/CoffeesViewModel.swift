@@ -70,12 +70,9 @@ extension CoffeesViewModel {
       return
     }
     if coffeeTypes.isEmpty {
-      if UserDefaults.isFirstTimePassed {
-        _ = loadFromDB()
-      } else {
-        await getCoffees()
+      if UserDefaults.isFirstTimePassed, !loadFromDB() {
+          await getCoffees()
       }
-      
     } else {
       coffeeTypes = coffeeTypes
     }
